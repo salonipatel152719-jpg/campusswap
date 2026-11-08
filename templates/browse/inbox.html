@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Inbox</h2>
+<div class="list-group">
+  {% for m in messages_received %}
+    <div class="list-group-item">
+      <div class="d-flex justify-content-between">
+        <strong>{{ m.sender.username }}</strong>
+        <small class="text-muted">{{ m.created_at|date:"M d, H:i" }}</small>
+      </div>
+      <div class="small text-muted">About: <a href="{{ m.listing.get_absolute_url }}">{{ m.listing.title }}</a></div>
+      <p class="mb-0">{{ m.body|linebreaksbr }}</p>
+    </div>
+  {% empty %}
+    <p>No messages yet.</p>
+  {% endfor %}
+</div>
+{% endblock %}

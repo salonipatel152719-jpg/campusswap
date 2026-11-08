@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<form method="get" class="row g-2 mb-4">
+  <div class="col-md-6">
+    <input name="q" class="form-control" placeholder="Search..." value="{{ q }}">
+  </div>
+  <div class="col-md-3">
+    <select name="category" class="form-select">
+      <option value="">All categories</option>
+      {% for c in categories %}
+        <option value="{{ c.id }}" {% if selected_category == c.id|stringformat:"s" %}selected{% endif %}>{{ c.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-3"><button class="btn btn-primary w-100">Search</button></div>
+</form>
+
+<div class="row">
+  {% for l in listings %}
+    <div class="col-md-4 mb-4">
+      <div class="card h-100">
+        {% if l.image %}
+          <img src="{{ l.image.url }}" class="card-img-top" style="height:200px;object-fit:cover" alt="{{ l.title }}">
+        {% else %}
+          <div class="bg-secondary-subtle d-flex align-items-center justify-content-center" style="height:200px">No photo</div>
+        {% endif %}
+        <div class="card-body">
+          <h5 class="card-title"><a href="{{ l.get_absolute_url }}" class="text-decoration-none">{{ l.title }}</a></h5>
+          <p class="card-text mb-0">{% if l.price == 0 %}Free{% else %}${{ l.price }}{% endif %}
+            <span class="text-muted small"> &middot; {{ l.category|default:"" }}</span></p>
+        </div>
+      </div>
+    </div>
+  {% empty %}
+    <p>No listings found.</p>
+  {% endfor %}
+</div>
+
+{% if recent %}
+  <hr>
+  <h5>Recently viewed</h5>
+  <div class="d-flex flex-wrap gap-3">
+    {% for l in recent %}<a href="{{ l.get_absolute_url }}">{{ l.title }}</a>{% endfor %}
+  </div>
+{% endif %}
+{% endblock %}

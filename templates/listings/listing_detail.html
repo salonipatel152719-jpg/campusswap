@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+  <div class="col-md-6 mb-3">
+    {% if listing.image %}
+      <img src="{{ listing.image.url }}" class="img-fluid rounded" alt="{{ listing.title }}">
+    {% else %}
+      <div class="bg-secondary-subtle rounded d-flex align-items-center justify-content-center" style="height:300px">No photo</div>
+    {% endif %}
+  </div>
+  <div class="col-md-6">
+    <h2>{{ listing.title }}</h2>
+    <h4 class="text-success">{% if listing.price == 0 %}Free{% else %}${{ listing.price }}{% endif %}</h4>
+    <p>{{ listing.description|linebreaksbr }}</p>
+    <p class="text-muted">Seller: {{ listing.seller.username }} &middot; {{ listing.category|default:"Uncategorized" }} &middot; {{ listing.created_at|date:"M d, Y" }}</p>
+    {% if user.is_authenticated %}
+      {% if user == listing.seller %}
+        <a class="btn btn-secondary" href="{% url 'listing_update' listing.pk %}">Edit listing</a>
+      {% else %}
+        <a class="btn btn-primary" href="{% url 'message_create' listing.pk %}">Message seller</a>
+        <form method="post" action="{% url 'toggle_favorite' listing.pk %}" class="d-inline">
+          {% csrf_token %}
+          <button class="btn btn-outline-danger">{% if is_favorite %}Remove from favorites{% else %}Save to favorites{% endif %}</button>
+        </form>
+      {% endif %}
+    {% else %}
+      <p><a href="{% url 'login' %}?next={{ request.path }}">Log in</a> to message the seller or save this item.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

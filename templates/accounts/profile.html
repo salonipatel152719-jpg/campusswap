@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>My profile</h2>
+<p><strong>Username:</strong> {{ user.username }}<br><strong>Email:</strong> {{ user.email }}</p>
+<h4>My listings</h4>
+<ul class="list-group mb-3">
+  {% for l in my_listings %}
+    <li class="list-group-item d-flex justify-content-between">
+      <a href="{{ l.get_absolute_url }}">{{ l.title }}</a>
+      <a href="{% url 'listing_update' l.pk %}">Edit</a>
+    </li>
+  {% empty %}
+    <li class="list-group-item">You have not posted anything yet. <a href="{% url 'listing_create' %}">Post an item</a></li>
+  {% endfor %}
+</ul>
+{% endblock %}
